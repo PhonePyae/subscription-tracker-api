@@ -12,6 +12,7 @@ import subscriptionRouter from './routes/subscription.routes.js';
 // Middleware files
 import errorMiddleware from './middlewares/error.middleware.js'; // Custom error handler
 import cookieParser from 'cookie-parser'; // Middleware to parse cookies
+import arcjetMiddleware from './middlewares/arcjet.middleware.js';
 
 // Load environment variables from the config file
 config({ path: './config/config.env' });
@@ -26,6 +27,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // Middleware to parse cookies from incoming requests
 app.use(cookieParser());
+
+// Middleware for ArcJet security and request validation
+app.use(arcjetMiddleware);
 
 // Mounting route handlers
 app.use('/api/v1/auth', authRouter); // Routes related to authentication
