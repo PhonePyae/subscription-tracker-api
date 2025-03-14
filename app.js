@@ -1,7 +1,7 @@
 // Import required modules
 import express from 'express'; // Express framework for handling HTTP requests
 import { config } from 'dotenv'; // dotenv for loading environment variables
-import color from 'colors'; // colors package for adding color to console logs
+import colors from 'colors'; // colors package for adding color to console logs
 import { connectDB } from './config/db.js'; // Import the database connection function
 
 // Route files (modular route handlers)
@@ -46,7 +46,7 @@ const PORT = process.env.PORT || 5009;
 // Start the server and connect to the database
 app.listen(PORT, async () => {
     await connectDB(); // Establish database connection
-    console.log(`Subscription Tracker API is running in ${process.env.NODE_ENV} Mode on PORT http://localhost:${PORT}.`);
+    console.log(colors.green(`Subscription Tracker API is running in ${process.env.NODE_ENV} Mode on PORT http://localhost:${PORT}.`));
 });
 
 export default app;
