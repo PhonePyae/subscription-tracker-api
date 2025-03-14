@@ -1,5 +1,9 @@
 import express from 'express';
 import {config} from 'dotenv';
+import color from 'colors';
+import {connectDB} from './config/db.js';
+
+// Route files
 import userRouter from './routes/user.routes.js'; 
 import authRouter from './routes/auth.routes.js';
 import subscriptionRouter from './routes/subscription.routes.js';
@@ -18,7 +22,9 @@ app.get('/', (req,res)=>{
 });
 
 const PORT = process.env.PORT || 5009;
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
+    // Connect to database
+    await connectDB();
     console.log(`Subscription Tracker API is running in ${process.env.NODE_ENV} Mode on PORT http://localhost:${PORT}.`);
 });
 
