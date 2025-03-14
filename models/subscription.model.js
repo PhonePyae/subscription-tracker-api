@@ -84,5 +84,5 @@ subscriptionSchema.pre('save', function(next){
         this.status = 'expired';
     }
 
-    next();
+    next(); 
 });
