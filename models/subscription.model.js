@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User from "./user.model";
+import User from "./user.model.js";
 
 const subscriptionSchema = new mongoose.Schema({
     name: {
@@ -86,3 +86,7 @@ subscriptionSchema.pre('save', function(next){
 
     next(); 
 });
+
+const Subscription = mongoose.model('Subscription', subscriptionSchema);
+
+export default Subscription;
