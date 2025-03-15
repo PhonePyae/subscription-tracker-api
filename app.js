@@ -8,6 +8,7 @@ import { connectDB } from './config/db.js'; // Import the database connection fu
 import userRouter from './routes/user.routes.js'; 
 import authRouter from './routes/auth.routes.js';
 import subscriptionRouter from './routes/subscription.routes.js';
+import workflowRouter from './routes/workflow.routes.js';
 
 // Middleware files
 import errorMiddleware from './middlewares/error.middleware.js'; // Custom error handler
@@ -35,6 +36,7 @@ app.use(arcjetMiddleware);
 app.use('/api/v1/auth', authRouter); // Routes related to authentication
 app.use('/api/v1/users', userRouter); // Routes related to user management
 app.use('/api/v1/subscriptions', subscriptionRouter); // Routes for subscription management
+app.use('/api/v1/workflows', workflowRouter); //Routes for workflow management
 
 // Global error handling middleware
 app.use(errorMiddleware);

@@ -1,4 +1,5 @@
 import Subscription from '../models/subscription.model.js';
+import {workflowClient} from '../config/upstash.js';
 
 // Get all subscriptions
 export const getSubscriptions = async (req, res, next) => {
@@ -29,22 +30,28 @@ export const getSubscription = async (req, res, next) => {
 
 // Create a subscripton
 export const createSubscription = async (req, res, next) => {
-    try {
-        console.log("Request Body:", req.body);
-        console.log("User ID:", req.user ? req.user._id : "User not found");
+  try {
+    const subscription = await Subscription.create({
+      ...req.body,
+      user: req.user._id,
+    });
 
-        if (!req.user || !req.user._id) {
-            return res.status(400).json({ success: false, message: "User not authenticated" });
-        }
+    const { workflowRunId } = await workflowClient.trigger({
+      url: `${process.env.SERVER_URL}/api/v1/workflows/subscription/reminder`,
+      body: {
+          subscriptionId: subscription.id // Ensure subscriptionId is correctly passed
+      },
+      headers: {
+          "content-type": "application/json"
+      },
+      retries: 0
+  });  
 
-        const subscription = await Subscription.create({ ...req.body, user: req.user._id });
-
-        res.status(201).json({ success: true, data: subscription });
-    } catch (error) {
-        console.error("Error creating subscription:", error);
-        next(error);
-    }
-};
+    res.status(201).json({ success: true, data: { subscription, workflowRunId } });
+  } catch (e) {
+    next(e);
+  }
+}
 
 //Get subscription by user ID
 export const getUserSubscriptions = async (req, res, next) => {
