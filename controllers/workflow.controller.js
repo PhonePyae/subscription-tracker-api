@@ -3,6 +3,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const { serve } = require('@upstash/workflow/express'); // Upstash written in common.js  
 import Subscription from '../models/subscription.model.js';
+import {sendReminderEmail} from '../utils/send-email.js';
 
 const REMINDERS = [7, 5, 2, 1]; // Reminder days before renewal date
 
@@ -51,12 +52,13 @@ const sleepUntilReminder = async (context, label, date) => {
 
 // Trigger the reminder action (e.g., send an email, SMS, etc.)
 const triggerReminder = async (context, label, subscription) => {
-  if (!subscription) {
-      console.error(`Error: Subscription is undefined in ${label}`);
-      return;
-  }
+  return await context.run(label, async () => {
+    console.log(`Triggering ${label} reminder`);
 
-  return await context.run(label, () => {
-      console.log(`Triggering ${label} reminder for subscription: ${subscription.name}`);
-  });
-};
+    await sendReminderEmail({
+      to: subscription.user.email,
+      type: label,
+      subscription,
+    })
+  })
+}
