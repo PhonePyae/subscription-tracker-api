@@ -25,13 +25,15 @@ export const sendReminders = serve(async (context) => {
 
     for (const daysBefore of REMINDERS) {
         const reminderDate = renewalDate.subtract(daysBefore, 'day');
-        console.log(`Reminder date: ${reminderDate.toString()}`); // Ensure this is logged
-        
+        console.log(`Reminder date: ${reminderDate.toString()}`);
+    
         if (reminderDate.isAfter(dayjs())) {
             await sleepUntilReminder(context, `Reminder ${daysBefore} days before`, reminderDate);
         }
-        await triggerReminder(context, `Reminder ${daysBefore} days before`);
+    
+        await triggerReminder(context, `Reminder ${daysBefore} days before`, subscription); // Pass subscription here
     }
+  
 });
 
 // Fetch subscription from the database using the subscription ID
@@ -49,8 +51,12 @@ const sleepUntilReminder = async (context, label, date) => {
 
 // Trigger the reminder action (e.g., send an email, SMS, etc.)
 const triggerReminder = async (context, label, subscription) => {
+  if (!subscription) {
+      console.error(`Error: Subscription is undefined in ${label}`);
+      return;
+  }
+
   return await context.run(label, () => {
-    console.log(`Triggering ${label} reminder for subscription: ${subscription.name}`);
-    // Logic to send email, SMS, push notifications...
+      console.log(`Triggering ${label} reminder for subscription: ${subscription.name}`);
   });
 };
